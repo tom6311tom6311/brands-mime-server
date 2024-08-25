@@ -15,7 +15,7 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
 
-@app.route('/images/<path:filename>')
+@app.route('/images/mimes/<path:filename>')
 def serve_image(filename):
     return send_from_directory(PHOTO_DIR, filename)
 
@@ -23,7 +23,7 @@ def serve_image(filename):
 def callback():
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
+    print("Request body: " + body)
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
@@ -33,10 +33,11 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     user_input = event.message.text.lower()
-    app.logger.info("User Input: " + user_input)
+    print("User Input: " + user_input)
     closest_photos = find_closest_mime_photos(user_input)
 
     if closest_photos:
+        print(url_for('serve_image', filename=closest_photos[0][0]))
         image_messages = [
             ImageSendMessage(
                 original_content_url=url_for('serve_image', filename=photo[0]),
@@ -60,7 +61,6 @@ def load_mime_photos(directory):
                 file_path = os.path.join(root, file)
                 photo_name = os.path.splitext(file)[0]  # Extract the filename without the extension
                 mime_photos[photo_name] = file_path
-    print(mime_photos)
     return mime_photos
 
 def segment_text(text):
