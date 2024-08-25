@@ -49,7 +49,7 @@ def handle_message(event):
         ]
         line_bot_api.reply_message(event.reply_token, image_messages)
     else:
-        line_bot_api.reply_message(event.reply_token, TextMessage(text="Sorry, no matching mime found."))
+        line_bot_api.reply_message(event.reply_token, TextMessage(text="抱歉，找不到相關的圖..."))
 
 
 def load_mime_photos(directory):
