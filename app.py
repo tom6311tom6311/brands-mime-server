@@ -1,5 +1,6 @@
 import os
 import jieba
+import urllib.parse
 from flask import Flask, request, abort, send_from_directory, url_for
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -16,9 +17,10 @@ line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
 base_url = os.getenv('BASE_URL')
 
-@app.route('/images/mimes/<path:filename>')
+@app.route('/images/<filename>')
 def serve_image(filename):
-    return send_from_directory(PHOTO_DIR, filename)
+    image_path = urllib.parse.unquote(filename)
+    return send_from_directory(PHOTO_DIR, image_path)
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -41,8 +43,8 @@ def handle_message(event):
         print(f"{base_url}/images/{closest_photos[0][0]}")
         image_messages = [
             ImageSendMessage(
-                original_content_url=f"{base_url}/images/{photo[0]}",
-                preview_image_url=f"{base_url}/images/{photo[0]}"
+                original_content_url=f"{base_url}/images/{urllib.parse.quote(photo[0])}",
+                preview_image_url=f"{base_url}/images/{urllib.parse.quote(photo[0])}"
             )
             for photo in closest_photos
         ]
@@ -61,7 +63,7 @@ def load_mime_photos(directory):
             if file.endswith(('.png', '.jpg', '.jpeg')):
                 file_path = os.path.join(root, file)
                 photo_name = os.path.splitext(file)[0]  # Extract the filename without the extension
-                mime_photos[photo_name] = file_path
+                mime_photos[photo_name] = file_path[len(directory)+1:] # Exclude `directory/` from the path
     return mime_photos
 
 def segment_text(text):
