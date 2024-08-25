@@ -17,10 +17,9 @@ line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
 base_url = os.getenv('BASE_URL')
 
-@app.route('/images/<filename>')
+@app.route('/images/<path:filename>')
 def serve_image(filename):
-    image_path = urllib.parse.unquote(filename)
-    return send_from_directory(PHOTO_DIR, image_path)
+    return send_from_directory(PHOTO_DIR, filename)
 
 @app.route("/callback", methods=['POST'])
 def callback():
