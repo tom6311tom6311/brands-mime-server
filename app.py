@@ -14,6 +14,7 @@ app = Flask(__name__)
 # Load the Line API credentials from environment variables
 line_bot_api = LineBotApi(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_CHANNEL_SECRET'))
+base_url = os.getenv('BASE_URL')
 
 @app.route('/images/mimes/<path:filename>')
 def serve_image(filename):
@@ -37,11 +38,11 @@ def handle_message(event):
     closest_photos = find_closest_mime_photos(user_input)
 
     if closest_photos:
-        print(url_for('serve_image', filename=closest_photos[0][0]))
+        print(f"{base_url}/images/{closest_photos[0][0]}")
         image_messages = [
             ImageSendMessage(
-                original_content_url=url_for('serve_image', filename=photo[0]),
-                preview_image_url=url_for('serve_image', filename=photo[0])
+                original_content_url=f"{base_url}/images/{photo[0]}",
+                preview_image_url=f"{base_url}/images/{photo[0]}"
             )
             for photo in closest_photos
         ]
