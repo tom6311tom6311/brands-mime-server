@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "15000:5000"
+    volumes:
+      - ./mimes:/app/mimes:ro  # Mount the mimes directory as read-only
+    environment:
+      - FLASK_ENV=development
