@@ -8,3 +8,6 @@ services:
       - ./mimes:/app/mimes:ro  # Mount the mimes directory as read-only
     environment:
       - FLASK_ENV=development
+      - LINE_CHANNEL_ACCESS_TOKEN=${LINE_CHANNEL_ACCESS_TOKEN}
+      - LINE_CHANNEL_SECRET=${LINE_CHANNEL_SECRET}
+      - BASE_URL=${BASE_URL}
