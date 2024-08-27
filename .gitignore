@@ -1,4 +1,7 @@
 .env
 mimes/*
 !mimes/.gitkeep
+!mimes/uploaded
+mimes/uploaded/*
+!mimes/uploaded/.gitkeep
 **/.DS_Store

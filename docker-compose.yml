@@ -5,7 +5,7 @@ services:
     ports:
       - "15000:5000"
     volumes:
-      - ./mimes:/app/mimes:ro  # Mount the mimes directory as read-only
+      - ./mimes:/app/mimes
     environment:
       - FLASK_ENV=development
       - LINE_CHANNEL_ACCESS_TOKEN=${LINE_CHANNEL_ACCESS_TOKEN}
