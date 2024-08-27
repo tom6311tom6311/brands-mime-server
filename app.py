@@ -2,6 +2,7 @@ import os
 import jieba
 import tempfile
 import random
+import shutil
 import urllib.parse
 from flask import Flask, request, abort, send_from_directory
 from linebot import LineBotApi, WebhookHandler
@@ -97,7 +98,7 @@ def save_mime_photo(tmp_file_path, title):
     Save the uploaded mime photo with the provided title.
     """
     save_path = os.path.join(UPLOADED_PHOTO_DIR, f"{title}.jpg")
-    os.rename(tmp_file_path, save_path)
+    shutil.move(tmp_file_path, save_path)
 
 def load_mime_photos(directory):
     """
